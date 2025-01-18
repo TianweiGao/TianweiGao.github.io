@@ -4,8 +4,6 @@
 
 layout: home
 ---
-# Welcome to My Homepage
-
 ## About Me
 I am a master of finance student in Shanghai Advanced Institute of Finance, Shanghai Jiaotong University (SAIF).Prior to this, I obtained bachelor degree in Mathmatics in School of Mathematical Science in Peking University.
 

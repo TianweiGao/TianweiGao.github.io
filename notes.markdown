@@ -11,4 +11,6 @@ layout: default
 
 [Metric entropy](/HDS%20Notes/Metric%20Entropy.pdf){:target="_blank"}
 
+[Uniform Law of Large Numbers, VC-dimension of Function Class](/HDS%20Notes/Uniform%20Law%20of%20Large%20Numbers.pdf){:target="_blank"}
+
 

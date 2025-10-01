@@ -11,4 +11,4 @@ I am a master of finance student in Shanghai Advanced Institute of Finance, Shan
 Email: twgao.24@saif.sjtu.edu.cn
 
 ## Notes and Projects
-Here are some <a href="/notes.html" class="btn">Notes</a> on statistics and some [DL toy models](https://github.com/TianweiGao/Deep-Learning-Demos) I have been working on.
+Here are some <a href="/notes.html" class="btn">Notes</a> on statistics.

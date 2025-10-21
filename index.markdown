@@ -5,8 +5,7 @@
 layout: default
 ---
 ## About Me
-I am a master of finance student in Shanghai Advanced Institute of Finance, Shanghai Jiaotong University (SAIF).Prior to this, I obtained bachelor degree in Mathmatics in School of Mathematical Science in Peking University. Here is my [CV](/misc/Tianwei%20Gao%20CV.pdf){:target="_blank"}
-
+I am a master of finance student in Shanghai Advanced Institute of Finance, Shanghai Jiaotong University (SAIF).Prior to this, I obtained bachelor degree in Mathmatics in School of Mathematical Science in Peking University. 
 ## Contact
 Email: twgao.24@saif.sjtu.edu.cn
 

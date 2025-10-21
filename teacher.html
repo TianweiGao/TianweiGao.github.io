@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>课程签到系统（教师端）</title>
+    <style>
+        .container { max-width: 800px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .section { margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 4px; }
+        input { width: 300px; padding: 8px; margin: 10px 0; }
+        button { padding: 8px 16px; background: #1677ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0f5bb9; }
+        #queryResult { margin-top: 10px; padding: 10px; border: 1px dashed #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>课程签到系统（教师端）</h2>
+
+        <!-- 发布签到区域 -->
+        <div class="section">
+            <h3>1. 发布新签到</h3>
+            课程名称：<input type="text" id="courseName" placeholder="如：云计算导论"><br>
+            截止时间：<input type="datetime-local" id="endTime" placeholder="选择签到截止时间"><br>
+            <button onclick="publishSign()">发布签到</button>
+            <p id="publishResult" style="color: #ff4d4f;"></p>
+        </div>
+
+        <!-- 查询签到结果区域 -->
+        <div class="section">
+            <h3>2. 查询签到结果</h3>
+            签到码：<input type="text" id="queryCode" placeholder="输入发布时的签到码"><br>
+            <button onclick="querySign()">查询结果</button>
+            <div id="queryResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // **************************
+        // 关键：替换为你的FC Web函数的HTTP触发器URL
+        // 从FC控制台→函数详情→触发器管理中获取，格式如：https://xxx.cn-hangzhou.fcapp.run
+        const FC_URL = "https://sign-infunction-yabmehlmwo.cn-beijing.fcapp.run";
+        // **************************
+
+        // 发布签到
+        function publishSign() {
+            const courseName = document.getElementById("courseName").value.trim();
+            const endTimeInput = document.getElementById("endTime").value;
+            
+            // 简单校验输入
+            if (!courseName) {
+                document.getElementById("publishResult").innerText = "请输入课程名称";
+                return;
+            }
+            if (!endTimeInput) {
+                document.getElementById("publishResult").innerText = "请选择截止时间";
+                return;
+            }
+            // 转换时间格式为"YYYY-MM-DD HH:MM:SS"（适配后端SQL的DATETIME格式）
+            const endTime = endTimeInput.replace("T", " ");
+
+            // 调用FC接口
+            fetch(FC_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "publish",
+                    course_name: courseName,
+                    end_time: endTime
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("publishResult").style.color = "#52c41a";
+                    document.getElementById("publishResult").innerText = `✅ 签到发布成功！签到码：${data.sign_code}（请告知学生）`;
+                } else {
+                    document.getElementById("publishResult").innerText = `❌ 失败：${data.msg}`;
+                }
+            })
+            .catch(err => {
+                document.getElementById("publishResult").innerText = `❌ 网络错误：${err.message}`;
+            });
+        }
+
+        // 查询签到结果
+        function querySign() {
+            const signCode = document.getElementById("queryCode").value.trim();
+            if (!signCode) {
+                document.getElementById("queryResult").innerText = "请输入签到码";
+                return;
+            }
+
+            // 调用FC接口
+            fetch(FC_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "query",
+                    sign_code: signCode
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let html = `<p>✅ 共${data.count}人签到：</p><table border="1" cellpadding="8">`;
+                    html += `<tr><th>学号</th><th>姓名</th><th>签到时间</th></tr>`;
+                    data.records.forEach(record => {
+                        html += `<tr>
+                            <td>${record.student_id}</td>
+                            <td>${record.student_name}</td>
+                            <td>${record.sign_time}</td>
+                        </tr>`;
+                    });
+                    html += `</table>`;
+                    document.getElementById("queryResult").innerHTML = html;
+                } else {
+                    document.getElementById("queryResult").innerText = `❌ 失败：${data.msg}`;
+                }
+            })
+            .catch(err => {
+                document.getElementById("queryResult").innerText = `❌ 网络错误：${err.message}`;
+            });
+        }
+    </script>
+</body>
+</html>

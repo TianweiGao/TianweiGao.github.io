@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>课程签到系统（学生端）</title>
+    <style>
+        .container { max-width: 600px; margin: 100px auto; padding: 30px; border: 1px solid #ccc; border-radius: 8px; text-align: center; }
+        input { width: 80%; padding: 10px; margin: 15px 0; font-size: 16px; }
+        button { padding: 12px 24px; font-size: 16px; background: #1677ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0f5bb9; }
+        #signResult { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>课程签到系统（学生端）</h2>
+        <p>请输入教师提供的签到码和个人信息</p>
+        
+        签到码：<br>
+        <input type="text" id="signCode" placeholder="如：ABC123"><br>
+        
+        学号：<br>
+        <input type="text" id="studentId" placeholder="你的学号"><br>
+        
+        姓名：<br>
+        <input type="text" id="studentName" placeholder="你的姓名"><br>
+        
+        <button onclick="submitSign()">提交签到</button>
+        <p id="signResult" style="color: #ff4d4f;"></p>
+    </div>
+
+    <script>
+        // **************************
+        // 关键：替换为与教师端相同的FC URL
+        const FC_URL = "https://sign-infunction-yabmehlmwo.cn-beijing.fcapp.run";
+        // **************************
+
+        function submitSign() {
+            const signCode = document.getElementById("signCode").value.trim();
+            const studentId = document.getElementById("studentId").value.trim();
+            const studentName = document.getElementById("studentName").value.trim();
+
+            // 简单校验输入
+            if (!signCode || !studentId || !studentName) {
+                document.getElementById("signResult").innerText = "❌ 请填写完整信息";
+                return;
+            }
+
+            // 调用FC接口
+            fetch(FC_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "sign",
+                    sign_code: signCode,
+                    student_id: studentId,
+                    student_name: studentName
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("signResult").style.color = "#52c41a";
+                    document.getElementById("signResult").innerText = "✅ 签到成功！";
+                } else {
+                    document.getElementById("signResult").innerText = `❌ ${data.msg}`;
+                }
+            })
+            .catch(err => {
+                document.getElementById("signResult").innerText = `❌ 网络错误：${err.message}`;
+            });
+        }
+    </script>
+</body>
+</html>
